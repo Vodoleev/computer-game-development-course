@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+*.cs diff=csharp
+*.shader diff=csharp
+
+*.png binary
+*.jpg binary
+*.fbx binary
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.mp4 binary
