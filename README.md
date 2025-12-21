@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Endless Runner — Individual Project
 
 ## Автор
@@ -74,3 +75,59 @@
 - `DifficultyScaler` — рост сложности (скорость + частота препятствий).
 - `GroundLooper` — бесконечная дорожка.
 - `UIManager` — управление UI (здоровье, скорость, сообщения).
+=======
+\## Автор
+
+ФИО: Подолеев Вадим Романович, БПМИИ2211
+
+
+
+\## Сцены (точки входа)
+
+\- MenuScene — стартовая сцена
+
+\- GameScene — основной игровой процесс
+
+
+
+\## Управление
+
+\- Влево/вправо: ← → (или A/D)
+
+\- Прыжок: Space / ↑ / W
+
+\- Пауза: ESC
+
+
+
+\## Реализовано (HW2)
+
+\- Главное меню (название, автор, рекорд, Start/Quit)
+
+\- HUD в игре: HP, Score, HighScore, скорость, сообщения о бонусах
+
+\- Пауза по ESC + Resume/Exit to Menu
+
+\- Экран Game Over + Restart/Exit
+
+\- Сохранение High Score (между запусками)
+
+\- Бонусы: лечение и ускорение
+
+\- Анимации через Animator:
+
+&nbsp; - DamageFlash (Trigger `Damage`)
+
+&nbsp; - BonusFlash (Trigger `Bonus`)
+
+&nbsp; - SpeedBoostLoop (Bool `SpeedBoostActive`)
+
+
+
+\## Отличия от HW1
+
+\- Добавлены меню/пауза/game over/рекорд/анимации/вывод параметров на экран.
+
+
+
+>>>>>>> b8cb46a (complited HW2)
