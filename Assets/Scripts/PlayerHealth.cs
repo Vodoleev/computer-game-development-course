@@ -1,62 +1,81 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // для перезапуска сцены
 
+/// <summary>
+/// Controls player health, damage handling and death.
+/// Shows health in UI via UIManager, triggers Animator feedback on damage,
+/// and notifies GameManager on death.
+/// </summary>
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")]
-    public int maxHealth = 100;
+    [SerializeField] private int maxHealth = 100;
 
-    [SerializeField]
-    private int currentHealth;
+    [Header("Runtime (read-only)")]
+    [SerializeField] private int currentHealth;
 
     private bool isDead = false;
+    private Animator anim;
+
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
 
     private void Start()
     {
-        // В начале игры здоровье = максимум
         currentHealth = maxHealth;
-        UIManager.Instance?.SetMaxHealth(maxHealth);
-        UIManager.Instance?.SetHealth(currentHealth);
 
-        Debug.Log($"Player HP: {currentHealth}/{maxHealth}");
-    }
-
-    public void TakeDamage(int amount)
-    {
-        if (isDead) return;
-
-        currentHealth -= amount;
-        currentHealth = Mathf.Max(currentHealth, 0);
-        UIManager.Instance?.SetHealth(currentHealth);
-
-        Debug.Log($"Player took {amount} damage. HP: {currentHealth}/{maxHealth}");
-
-        if (currentHealth <= 0)
+        // UI init
+        if (UIManager.Instance != null)
         {
-            Die();
+            UIManager.Instance.SetMaxHealth(maxHealth);
+            UIManager.Instance.SetHealth(currentHealth);
         }
     }
 
+    /// <summary>
+    /// Apply damage to the player. Triggers damage animation and updates UI.
+    /// </summary>
+    public void TakeDamage(int amount)
+    {
+        if (isDead) return;
+        if (amount <= 0) return;
+
+        currentHealth -= amount;
+        if (currentHealth < 0) currentHealth = 0;
+
+        // Damage feedback animation (Animator Trigger: "Damage")
+        anim?.SetTrigger("Damage");
+
+        // UI update
+        if (UIManager.Instance != null)
+            UIManager.Instance.SetHealth(currentHealth);
+
+        if (currentHealth <= 0)
+            Die();
+    }
+
+    /// <summary>
+    /// Heal the player and update UI (optional).
+    /// </summary>
     public void Heal(int amount)
     {
         if (isDead) return;
+        if (amount <= 0) return;
 
         currentHealth += amount;
-        currentHealth = Mathf.Min(currentHealth, maxHealth);
-        UIManager.Instance?.SetHealth(currentHealth);
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
 
-        Debug.Log($"Player healed {amount}. HP: {currentHealth}/{maxHealth}");
+        if (UIManager.Instance != null)
+            UIManager.Instance.SetHealth(currentHealth);
     }
 
     private void Die()
     {
         if (isDead) return;
-
         isDead = true;
-        Debug.Log("Player died! Restarting scene...");
 
-        // Перезапускаем текущую сцену
-        Scene current = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(current.buildIndex);
+        // Inform game manager (will show GameOver, save score, etc.)
+        GameManager.Instance?.GameOver();
     }
 }

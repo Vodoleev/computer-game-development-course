@@ -1,20 +1,29 @@
 using UnityEngine;
 
-public class HealBonus : BonusBase
+public class HealBonus : MonoBehaviour
 {
     [Header("Heal Settings")]
-    [Tooltip("На сколько здоровья вылечить игрока")]
-    public int healAmount = 20;
+    public int healAmount = 25;
 
-    protected override void ApplyBonus(GameObject player)
+    [Header("UI Message")]
+    public string message = "+HP";
+
+    private void OnTriggerEnter(Collider other)
     {
-        PlayerHealth health = player.GetComponent<PlayerHealth>();
-        if (health != null)
-        {
-            health.Heal(healAmount);
-            UIManager.Instance?.ShowBonusMessage($"+{healAmount} HP");
+        if (!other.CompareTag("Player")) return;
 
-            Debug.Log($"Heal bonus picked up: +{healAmount} HP");
-        }
+        // 1) Bonus pickup animation (Animator Trigger: "Bonus")
+        other.GetComponentInParent<Animator>()?.SetTrigger("Bonus");
+
+        // 2) Apply heal
+        var health = other.GetComponentInParent<PlayerHealth>();
+        if (health != null)
+            health.Heal(healAmount);
+
+        // 3) UI message (optional)
+        UIManager.Instance?.ShowBonusMessage(message);
+
+        // 4) Remove bonus object
+        Destroy(gameObject);
     }
 }
